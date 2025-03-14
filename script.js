@@ -1,4 +1,4 @@
-// ✅ Load Firebase SDKs (Ensure this is in index.html before this script)
+// ✅ Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAOnWB7cYInpPguAmy7H3m4iWwRJgZ4jJQ",
     authDomain: "my-money-tracker-245aa.firebaseapp.com",
@@ -8,12 +8,11 @@ const firebaseConfig = {
     appId: "1:458627255479:web:0cd7f8f526efb783b19132"
 };
 
-// ✅ Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// ✅ User Authentication Functions
+// ✅ Sign Up
 function signUp() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -23,6 +22,7 @@ function signUp() {
         .catch(error => alert(error.message));
 }
 
+// ✅ Login
 function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -36,6 +36,7 @@ function login() {
         .catch(error => alert(error.message));
 }
 
+// ✅ Logout
 function logout() {
     auth.signOut().then(() => {
         document.getElementById("auth-section").style.display = "block";
@@ -52,7 +53,7 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-// ✅ Expense Tracker Functions
+// ✅ Add Expense
 function addExpense() {
     const item = document.getElementById("item").value;
     const amount = document.getElementById("amount").value;
