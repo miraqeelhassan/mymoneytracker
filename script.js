@@ -1,22 +1,23 @@
-// Firebase Configuration
+// ✅ Load Firebase SDKs (Ensure this is in index.html before this script)
 const firebaseConfig = {
     apiKey: "AIzaSyAOnWB7cYInpPguAmy7H3m4iWwRJgZ4jJQ",
     authDomain: "my-money-tracker-245aa.firebaseapp.com",
     projectId: "my-money-tracker-245aa",
-    storageBucket: "my-money-tracker-245aa.firebasestorage.app",
+    storageBucket: "my-money-tracker-245aa.appspot.com",
     messagingSenderId: "458627255479",
     appId: "1:458627255479:web:0cd7f8f526efb783b19132"
-  };
+};
 
-// Initialize Firebase
+// ✅ Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// Authentication
+// ✅ User Authentication Functions
 function signUp() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+
     auth.createUserWithEmailAndPassword(email, password)
         .then(() => alert("Sign Up Successful!"))
         .catch(error => alert(error.message));
@@ -25,10 +26,12 @@ function signUp() {
 function login() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
+
     auth.signInWithEmailAndPassword(email, password)
         .then(() => {
             document.getElementById("auth-section").style.display = "none";
             document.getElementById("tracker-section").style.display = "block";
+            loadExpenses();
         })
         .catch(error => alert(error.message));
 }
@@ -40,7 +43,16 @@ function logout() {
     });
 }
 
-// Expense Tracker
+// ✅ Check Authentication State
+auth.onAuthStateChanged(user => {
+    if (user) {
+        document.getElementById("auth-section").style.display = "none";
+        document.getElementById("tracker-section").style.display = "block";
+        loadExpenses();
+    }
+});
+
+// ✅ Expense Tracker Functions
 function addExpense() {
     const item = document.getElementById("item").value;
     const amount = document.getElementById("amount").value;
@@ -60,7 +72,7 @@ function addExpense() {
     }
 }
 
-// Load Expenses
+// ✅ Load Expenses from Firestore
 function loadExpenses() {
     db.collection("expenses").onSnapshot(snapshot => {
         let total = 0;
@@ -81,7 +93,7 @@ function loadExpenses() {
     });
 }
 
-// Delete Expense
+// ✅ Delete Expense
 function deleteExpense(id) {
     db.collection("expenses").doc(id).delete().then(() => {
         alert("Expense deleted!");
@@ -89,7 +101,7 @@ function deleteExpense(id) {
     });
 }
 
-// Download PDF
+// ✅ Download PDF of Expenses
 function downloadPDF() {
     const monthYear = document.getElementById("pdf-month").value;
     const { jsPDF } = window.jspdf;
@@ -109,12 +121,3 @@ function downloadPDF() {
         doc.save(`Expenses_${monthYear}.pdf`);
     });
 }
-
-// Auto-load data
-auth.onAuthStateChanged(user => {
-    if (user) {
-        document.getElementById("auth-section").style.display = "none";
-        document.getElementById("tracker-section").style.display = "block";
-        loadExpenses();
-    }
-});
